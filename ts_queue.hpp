@@ -5,14 +5,14 @@
 template <typename T>
 class ts_queue {
 public:
-    void push_front(T elt) {
+    void push_front(T&& elt) {
         std::scoped_lock lock(mutex);
-        queue.push_front(elt);
+        queue.push_front(std::forward(elt));
     }
 
-    void push_back(T elt) {
+    void push_back(T&& elt) {
         std::scoped_lock lock(mutex);
-        queue.push_back(elt);
+        queue.push_back(std::forward(elt));
     }
 
     std::optional<T> pop_front() {
