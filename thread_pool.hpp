@@ -21,7 +21,7 @@ class thread_pool {
         std::vector<ts_queue<task>> queues; 
         std::vector<std::thread> threads;
         void worker_thread(const size_t thread_id);
-        //bool steal_task(task& stolen_task, size_t thread_id);
+        bool steal_task(task& stolen_task, size_t thread_id);
         bool all_queues_empty();
 
         std::atomic<bool> stop_flag; 

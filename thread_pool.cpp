@@ -28,14 +28,11 @@ void thread_pool::worker_thread(const size_t thread_id) {
             if (optional_val) {
                 curr_task = std::move(optional_val.value()); 
                 curr_task(); 
-                std::cout << thread_id << std::endl; 
             }
-        } else if (all_queues_empty()) { 
-            // order should be flipped at some point, so it should try stealing first 
-            // and if it's not able to find any tasks, then moves on
-            break;
+        } else if (steal_task(curr_task, thread_id)) { 
+            curr_task(); 
         } else { // should put work stealing logic here
-            std::this_thread::yield(); 
+            break;
         }
     }
 }
@@ -55,4 +52,18 @@ void thread_pool::stop() {
             t.join(); 
         }
     }
+}
+
+bool thread_pool::steal_task(task& stolen_task, size_t thread_id) {
+    for (size_t i = 0; i < num_threads; i++) {
+        if (thread_id != i) {
+            auto optional_val = queues[i].pop_back(); 
+            if (optional_val) {
+                std::cout << "Stealing task from thread " << i << " to thread " << thread_id << std::endl;
+                stolen_task = std::move(optional_val.value()); 
+                return true; 
+            }
+        }
+    }
+    return false; 
 }
