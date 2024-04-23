@@ -3,7 +3,7 @@
 #include <optional>
 
 template <typename T>
-class ts_queue {
+class thread_safe_queue {
 public:
     void push_front(T &&elt) {
         std::scoped_lock lock(mutex);
