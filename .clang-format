@@ -16,4 +16,4 @@ AllowShortLambdasOnASingleLine: Empty
 AlwaysBreakTemplateDeclarations: true
 BreakConstructorInitializers: BeforeComma
 IndentPPDirectives: AfterHash
-PointerAlignment: Left
+PointerAlignment: Right

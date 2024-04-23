@@ -1,6 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Werror -O2
-TARGET = threadpool 
+TARGET = main.out 
 SRCS = main.cpp thread_pool.cpp
 OBJS = $(SRCS:.cpp=.o)
 
