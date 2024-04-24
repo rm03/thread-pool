@@ -106,6 +106,7 @@ static void parallel_mmul_bench(benchmark::State &s) {
 
     // Main benchmark loop
     for (auto _ : s) {
+        puts("THis is a new execution cycle");
         // Create thread pool
         thread_pool pool;
         std::size_t end_row = 0;
@@ -118,10 +119,15 @@ static void parallel_mmul_bench(benchmark::State &s) {
         }
     }
 
+    puts("reaching end of the function");
     // Free memory
-    free(A);
-    free(B);
-    free(C);
+    delete[] A; 
+    delete[] B; 
+    delete[] C; 
+
+    //free(A);
+    //free(B);
+    //free(C);
 }
 BENCHMARK(parallel_mmul_bench)->Arg(384)->Arg(768)->Arg(1152)->Unit(benchmark::kMillisecond)->UseRealTime();
 

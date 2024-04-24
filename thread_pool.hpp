@@ -9,6 +9,8 @@
 #include <thread>
 #include <vector>
 
+std::mutex test_mtx;
+
 auto log_msg = [](size_t thread_id, auto msg) {
     std::clog << "[thread " << thread_id << "]: " << msg << std::endl;
 };
@@ -21,24 +23,30 @@ public:
         : num_threads(num_threads)
         , queues(num_threads) {
         for (size_t i = 0; i < num_threads; i++) {
-            threads.emplace_back(&thread_pool::worker_thread, this, i);
             semaphores.emplace_back(std::make_unique<std::binary_semaphore>(0));
+            threads.emplace_back(&thread_pool::worker_thread, this, i);
         }
     }
     ~thread_pool() {
+        
         stopping = true;
         for (int i = 0; i < num_threads; i++) {
             semaphores[i]->release(); // wake up any waiting threads
             log_msg(i, "joining");
             threads[i].join();
+            log_msg(i, "finished joining");
         }
+        
     }
     void enqueue_task(Task t) {
         if (!stopping) {
-            size_t idx = std::rand() % num_threads;
-            queues[idx].push_back(std::move(t));
-            log_msg(idx, "enqueueing task");
-            semaphores[idx]->release();
+            std::lock_guard<std::mutex> lock(test_mtx);
+            if (!stopping) {
+                size_t idx = std::rand() % num_threads;
+                queues[idx].push_back(std::move(t));
+                log_msg(idx, "enqueueing task");
+                semaphores[idx]->release();
+            }
         }
     }
 
@@ -49,6 +57,7 @@ private:
     std::vector<std::unique_ptr<std::binary_semaphore>> semaphores;
     std::atomic<bool> stopping{false};
     void worker_thread(const size_t thread_id) {
+        log_msg(thread_id, "thread created");
         while (true) {
             Task curr_task;
             while (auto task = queues[thread_id].pop_front()) { // execute all tasks in queue
@@ -58,9 +67,9 @@ private:
                 log_msg(thread_id, "finished executing task");
             }
             if (steal_task(curr_task, thread_id)) { // attempt to steal task
-                log_msg(thread_id, "executing STOLEN task");
+                log_msg(thread_id, "executing stolen task");
                 curr_task();
-                log_msg(thread_id, "finished executing STOLEN task");
+                log_msg(thread_id, "finished executing stolen task");
             } else if (stopping) {
                 break;
             } else if (queues[thread_id].empty()) {
