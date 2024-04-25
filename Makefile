@@ -1,18 +1,34 @@
 CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Werror -O2 -g
-TARGET = main.out 
-SRCS = main.cpp
-OBJS = $(SRCS:.cpp=.o)
+LDFLAGS = -lpthread
 
-all: $(TARGET)
+BENCHMARK = benchmark.out
+IMAGE_GEN = image_gen.out
 
-$(TARGET) : $(OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $^ -lpthread -lbenchmark
+BENCHMARK_SRC = benchmark.cpp
+IMAGE_GEN_SRC = examples/image_generation.cpp
 
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $<
+BENCHMARK_OBJ = $(BENCHMARK_SRC:.cpp=.o)
+IMAGE_GEN_OBJ = $(IMAGE_GEN_SRC:.cpp=.o)
 
-clean: 
-	rm -f $(OBJS) $(TARGET)
+HEADERS = thread_pool.hpp thread_safe_queue.hpp
 
-.PHONY: all clean
+.PHONY: all clean benchmark image_gen
+
+all: $(BENCHMARK) $(IMAGE_GEN)
+
+$(BENCHMARK): $(BENCHMARK_OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) -lbenchmark
+
+$(IMAGE_GEN): $(IMAGE_GEN_OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+
+%.o: %.cpp $(HEADERS)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(BENCHMARK) $(IMAGE_GEN) $(BENCHMARK_OBJ) $(IMAGE_GEN_OBJ)
+
+benchmark: $(BENCHMARK)
+
+image_gen: $(IMAGE_GEN)

@@ -1,6 +1,5 @@
 #pragma once
 #include "thread_safe_queue.hpp"
-#include "image_generation.hpp"
 
 #include <concepts>
 #include <functional>
@@ -23,7 +22,6 @@ public:
         for (size_t i = 0; i < num_threads; i++) {
             threads.emplace_back(&thread_pool::worker_thread, this, i);
         }
-        generatePerlinNoiseImage("test_image", 240, 240, 12345);
     }
     ~thread_pool() {
 
