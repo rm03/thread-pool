@@ -1,5 +1,6 @@
 #pragma once
 #include "thread_safe_queue.hpp"
+#include "image_generation.hpp"
 
 #include <concepts>
 #include <functional>
@@ -8,7 +9,6 @@
 #include <stdint.h>
 #include <thread>
 #include <vector>
-
 
 template <typename Task = std::function<void()>>
     requires std::invocable<Task>
@@ -23,6 +23,7 @@ public:
         for (size_t i = 0; i < num_threads; i++) {
             threads.emplace_back(&thread_pool::worker_thread, this, i);
         }
+        generatePerlinNoiseImage("test_image", 240, 240, 12345);
     }
     ~thread_pool() {
 
