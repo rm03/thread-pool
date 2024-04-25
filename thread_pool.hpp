@@ -9,8 +9,6 @@
 #include <thread>
 #include <vector>
 
-std::mutex test_mtx;
-
 auto log_msg = [](size_t thread_id, auto msg) {
     std::clog << "[thread " << thread_id << "]: " << msg << std::endl;
 };
@@ -40,13 +38,10 @@ public:
     }
     void enqueue_task(Task t) {
         if (!stopping) {
-            std::lock_guard<std::mutex> lock(test_mtx);
-            if (!stopping) {
-                size_t idx = std::rand() % num_threads;
-                queues[idx].push_back(std::move(t));
-                log_msg(idx, "enqueueing task");
-                semaphores[idx]->release();
-            }
+            size_t idx = std::rand() % num_threads;
+            queues[idx].push_back(std::move(t));
+            log_msg(idx, "enqueueing task");
+            semaphores[idx]->release();
         }
     }
 
