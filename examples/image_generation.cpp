@@ -37,15 +37,17 @@ void generatePerlinNoiseImage(std::vector<unsigned char> &image, int width, int 
 }
 
 int main() {
+    
     constexpr int WIDTH = 256;
     constexpr int HEIGHT = 256;
-    std::vector<unsigned char> image;
+    std::vector<unsigned char> image(WIDTH * HEIGHT * 3);
     thread_pool pool;
     for (int i = 0; i < HEIGHT; i++) {
         pool.enqueue_task([&]() {
             generatePerlinNoiseImage(image, WIDTH, i, 0);
         });
     }
-    stbi_write_png("test", WIDTH, HEIGHT, 3, image.data(), WIDTH * 3);
-    // generatePerlinNoiseImage("test_image", 240, 240, 12345);
+    
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    stbi_write_png("test.png", WIDTH, HEIGHT, 3, image.data(), WIDTH * 3);
 }
