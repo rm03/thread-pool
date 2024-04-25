@@ -22,6 +22,8 @@ public:
         , queues(num_threads) {
         for (size_t i = 0; i < num_threads; i++) {
             semaphores.emplace_back(std::make_unique<std::binary_semaphore>(0));
+        }
+        for (size_t i = 0; i < num_threads; i++) {
             threads.emplace_back(&thread_pool::worker_thread, this, i);
         }
     }
