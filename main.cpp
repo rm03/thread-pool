@@ -3,7 +3,7 @@
 
 #include "benchmark/benchmark.h"
 #include "thread_pool.hpp"
-
+#include "image_generation.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <random>
