@@ -34,7 +34,7 @@ void parallel_mmul(const float *A, const float *B, float *C, std::size_t N, std:
 }
 
 // Serial MMul benchmark
-/* static void serial_mmul_bench(benchmark::State &s) {
+static void serial_mmul_bench(benchmark::State &s) {
     // Number Dimensions of our matrix
     std::size_t N = s.range(0);
 
@@ -68,8 +68,8 @@ void parallel_mmul(const float *A, const float *B, float *C, std::size_t N, std:
     delete[] A;
     delete[] B;
     delete[] C;
-} */
-// BENCHMARK(serial_mmul_bench)->Arg(384)->Arg(768)->Arg(1152)->Unit(benchmark::kMillisecond);
+}
+BENCHMARK(serial_mmul_bench)->Arg(384)->Arg(768)->Arg(1152)->Unit(benchmark::kMillisecond);
 
 // Parallel MMul benchmark
 static void parallel_mmul_bench(benchmark::State &s) {
@@ -106,7 +106,6 @@ static void parallel_mmul_bench(benchmark::State &s) {
 
     // Main benchmark loop
     for (auto _ : s) {
-        puts("THis is a new execution cycle");
         // Create thread pool
         thread_pool pool;
         std::size_t end_row = 0;
@@ -119,15 +118,14 @@ static void parallel_mmul_bench(benchmark::State &s) {
         }
     }
 
-    puts("reaching end of the function");
     // Free memory
-    delete[] A; 
-    delete[] B; 
-    delete[] C; 
+    delete[] A;
+    delete[] B;
+    delete[] C;
 
-    //free(A);
-    //free(B);
-    //free(C);
+    // free(A);
+    // free(B);
+    // free(C);
 }
 BENCHMARK(parallel_mmul_bench)->Arg(384)->Arg(768)->Arg(1152)->Unit(benchmark::kMillisecond)->UseRealTime();
 
