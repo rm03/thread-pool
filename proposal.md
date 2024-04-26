@@ -1,6 +1,6 @@
 # Project Proposal
 
-Our idea is to create a work-stealing thread pool utilizing modern C++ features for efficiency and simplicity. 
+Our idea is to create a work-stealing thread pool utilizing modern C++ features for efficiency and simplicity.  
 
 ![Task system diagram](diagram.png)
 
