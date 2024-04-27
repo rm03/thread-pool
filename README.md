@@ -2,7 +2,7 @@
 
 For our C++ (CIS 1901) Final Project, we designed a work-stealing thread pool that can result in 4-6x increases in speed, found through benchmarking. We utilize native C++ threading, synchronization techniques with mutexes and semaphores, and a thread-safe queue to manage a series of tasks. 
 
-## Image Generation Demo
+## Image Generation Demo 
 
 As a fun little sidequest, we've developed a script in ```examples/image_generation.cpp``` that leverages perlin noise 2D to generate realistic looking world maps. Perlin noise is a vector-based math function that generates "smooth" noise. It takes in an x-position, a y-position, and a seed and can generate values that can be mapped to colors. We use stb to generate perlin values and image generation. An example of an image generated can be seen here: 
 <div align="center">
