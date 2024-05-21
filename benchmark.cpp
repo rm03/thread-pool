@@ -121,11 +121,8 @@ static void parallel_mmul_bench(benchmark::State &s) {
     delete[] A;
     delete[] B;
     delete[] C;
-
-    // free(A);
-    // free(B);
-    // free(C);
 }
+
 BENCHMARK(parallel_mmul_bench)->Arg(384)->Arg(768)->Arg(1152)->Unit(benchmark::kMillisecond)->UseRealTime();
 
 BENCHMARK_MAIN();
