@@ -16,9 +16,11 @@ public:
     thread_pool(const uint8_t num_threads = std::thread::hardware_concurrency())
         : num_threads(num_threads)
         , queues(num_threads) {
+        semaphores.reserve(num_threads);
         for (size_t i = 0; i < num_threads; i++) {
             semaphores.emplace_back(std::make_unique<std::binary_semaphore>(0));
         }
+        threads.reserve(num_threads);
         for (size_t i = 0; i < num_threads; i++) {
             threads.emplace_back(&thread_pool::worker_thread, this, i);
         }
@@ -31,7 +33,7 @@ public:
             threads[i].join();
         }
     }
-    void enqueue_task(Task t) {
+    inline void enqueue_task(Task t) {
         size_t idx = std::rand() % num_threads;
         queues[idx].push_back(std::move(t));
         semaphores[idx]->release();
@@ -39,10 +41,10 @@ public:
 
 private:
     const uint8_t num_threads;
+    std::atomic<bool> stopping{false};
     std::vector<thread_safe_queue<Task>> queues;
     std::vector<std::thread> threads;
     std::vector<std::unique_ptr<std::binary_semaphore>> semaphores;
-    std::atomic<bool> stopping{false};
     void worker_thread(const size_t thread_id) {
         while (true) {
             Task curr_task;
@@ -59,7 +61,7 @@ private:
             }
         }
     }
-    bool steal_task(Task &stolen_task, size_t thread_id) {
+    inline bool steal_task(Task &stolen_task, size_t thread_id) {
         for (size_t i = 1; i < num_threads; i++) {
             auto task = queues[(thread_id + i) % num_threads].pop_back();
             if (task) {
