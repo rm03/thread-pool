@@ -35,7 +35,7 @@ public:
         return elt;
     }
 
-    bool empty() {
+    inline bool empty() {
         std::lock_guard lock(mutex);
         return queue.empty();
     }
