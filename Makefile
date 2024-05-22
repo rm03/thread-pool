@@ -18,8 +18,7 @@ HEADERS = thread_pool.hpp thread_safe_queue.hpp
 all: $(BENCHMARK) $(IMAGE_GEN)
 
 $(BENCHMARK): $(BENCHMARK_OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) -lbenchmark
-
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) -lbenchmark 
 $(IMAGE_GEN): $(IMAGE_GEN_OBJ)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
